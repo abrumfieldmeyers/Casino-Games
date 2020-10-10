@@ -1,0 +1,166 @@
+import random
+
+money = 100
+
+def valid_bet(bet,money):
+    #Make sure that the bet is positive, and less than total money
+    bet = int(bet)
+    if bet <= 0:
+        print('You gotta bet some money!')
+        return False
+    if bet > money:
+        print('You bet {0} but you only have {1}!'.format(bet,money))
+        print('You don\'t have enough cash for that!')
+        return False
+    return True
+def coin_flip(call, bet):
+  print('________________')
+  #Check to make sure call is either heads or tails  
+  while (call.lower() != 'heads') and (call.lower() != 'tails'):
+    print('Call either heads or tails next time!')
+    return 0
+  print('Let\'s flip a coin. You bet {0} on {1}.'.format(bet,call))
+  bet = int(bet)
+  #Check if bet is good
+  if not valid_bet(bet,money):
+      return 0
+  if call.lower() == 'heads':
+    guess = 1
+  else:
+    guess = 2
+  flip = random.randint(1,2)
+  if flip == 1:
+    print('Heads!')
+  else:
+    print('Tails!')
+  if guess == flip:
+    print('Nice!')
+    print('You won {0}'.format(bet))
+    return bet
+  else:
+    print('Oh well...Better luck next time...')
+    print('You lost {0}'.format(bet))
+    return (0-bet)
+
+def cho_han(call, bet):
+    print('________________')
+    #Make sure call is valid: Either odd/even
+    if call.lower() == 'odd':
+        guess = 1
+    elif call.lower() == 'even':
+        guess = 2
+    else:
+        print('You gotta guess either even or odd, yo.')
+        return 0
+    print('Lets roll some dice! You\'re betting {0} on {1}'.format(bet,call))
+    if not valid_bet(bet,money):
+        return 0
+    #two rolls on d6, summed, and reduced to 1 or 2
+    roll1 = random.randint(1,6)
+    roll2 = random.randint(1,6)
+    score = roll1+ roll2
+    if score % 2 == 0:
+        score = 2
+    else:
+        score = 1
+    print('You rolled {0} and {1}.'.format(roll1,roll2))
+    if score == guess:
+        print('Nice! You won {0}'.format(bet))
+        return bet
+    else:
+        print('You lost {0}. Better luck next time.'.format(bet))
+        return (0-bet)
+
+
+def pickacard(bet):
+  print('________________')
+  print('Let\'s pick a card! High card wins.')
+  if not valid_bet(bet, money):
+      return 0
+  print('Your bet is for {0}'.format(bet))
+  deck = [1,1,1,1,2,2,2,2,3,3,3,3,4,4,4,4,5,5,5,5,6,6,6,6,7,7,7,7,8,8,8,8,9,9,9,9,10,10,10,10,11,11,11,11,12,12,12,12,13,13,13,13]
+  #Removes 2 cards from deck, assigns to each player. If face card, renames to Jack/queen/king 
+  pick1 = random.randint(1,len(deck))
+  card1 = deck.pop(pick1)
+  name1 = str(card1)
+  if card1 > 10:
+    if card1 == 11:
+      name1 = 'Jack'
+    if card1 == 12:
+      name1 = 'Queen'
+    if card1 == 13:
+      name1 = 'King'
+  pick2 = random.randint(1,len(deck))
+  card2 = deck.pop(pick2)
+  name2 = str(card2)
+  if card2 > 10:
+    if card2 == 11:
+      name2 = 'Jack'
+    if card2 == 12:
+      name2 = 'Queen'
+    if card2 == 13:
+      name2 = 'King'
+  #print out results
+  print('You drew a {0}. Dealer drew a {1}.'.format(name1, name2))
+  if card1 > card2:
+    print('Nice, you have the high card')
+    return bet
+  if card1 == card2:
+    print('Draw!')
+    return 0
+  if card1 < card2:
+    print('Oh well, dealer wins this hand.')
+    return 0-bet
+
+    
+
+def roulette(call, bet):
+  print('________________')
+  wheel = [00,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,0]
+  pick = random.choice(wheel)
+  pickindex = wheel.index(pick)
+  print('Let\'s play some roulette!')
+  if not valid_bet(bet,money):
+      return 0
+  if type(call)==int:
+    print('You bet {1} on number {0}'.format(call,bet))
+  else:
+    print('You bet {1} on {0}s'.format(call.lower(),bet))
+  print('Rolling... Landed on {0}'.format(pick))
+  #rolls a 0 or 00, auto win
+  if pick == 0 or pick == 00:
+    print('Wow! {0}! You win!'.format(pick))
+    return bet*35
+  #bet on a number
+  if type(call) == int:
+    if pick == call:
+      print('Nice!')
+      print('You win {0} back.'.format(bet*35))
+      return bet*35
+    else:
+      print('Oh well. Better luck next time.')
+      return 0-bet
+  #Betting evens or odds
+  if call.lower() == 'even':
+    if pickindex %2 == 0:
+      print('Even wins!')
+      return bet
+    else:
+      print('Better luck next time.')
+      return 0-bet
+  if pickindex%2 != 0:
+    print('Odd wins!')
+    return bet
+  print('Better luck next time...')
+  return 0-bet
+
+
+####### Play some games here!
+money += coin_flip('Heads',random.randint(1,money) )
+print('Total funds: '+ str(money))
+money += (cho_han('Even', random.randint(1,money)))
+print('Total funds: '+ str(money))
+money += (pickacard(random.randint(1,money)))
+print('Total funds: '+ str(money))
+money += roulette('odd', random.randint(1,money))
+print('Total funds: '+ str(money))
